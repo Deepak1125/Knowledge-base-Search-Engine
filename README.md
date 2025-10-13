@@ -1,4 +1,4 @@
-# 🧠 Gemini-PDF Knowledge Search (RAG-based Document QA)
+# 🧠 Knowledge Base Search Engine using Gemini LLM (RAG-based Document QA)
 
 ## **Objective**
 This project enables intelligent search and question-answering across multiple PDF documents using **Retrieval-Augmented Generation (RAG)** powered by **Google’s Gemini LLM**.  
