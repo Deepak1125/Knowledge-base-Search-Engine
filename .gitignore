@@ -6,6 +6,20 @@ __pycache__/
 # C extensions
 *.so
 
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.db
+.env
+*.faiss
+*.pkl
+*.npy
+*.bin
+*.index
+faiss_index/
+rag1/
+
 # Distribution / packaging
 .Python
 build/
