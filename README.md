@@ -55,8 +55,7 @@ The goal is to provide concise, context-aware, and source-grounded answers to us
 ## **Example Run**
 Run in Git Bash
 # Clone the repository
-git clone https://github.com/yourusername/gemini-pdf-knowledge-search.git
-cd gemini-pdf-knowledge-search
+git clone https://github.com/Deepak1125/Knowledge-base-Search-Engine.git
 
 # Install dependencies
 pip install -r requirements.txt
