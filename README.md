@@ -20,7 +20,7 @@ The goal is to provide concise, context-aware, and source-grounded answers to us
   - Embeddings generated via **HuggingFace model** (`intfloat/e5-base-v2`)
   - **Gemini API (Google Generative AI)** handles language understanding and synthesis
 - **Frontend:**
-  - Fully handled by **Streamlit** (no separate backend server required)
+  - Fully handled by **Streamlit** (backend server is handled by **streamlit**)
   - Includes persistent chat history, PDF-based retriever caching, and export options (**TXT**, **JSON**, **PDF**)
 - **Environment:**
   - Store your API key in `.streamlit/secrets.toml` under:
@@ -42,14 +42,6 @@ The goal is to provide concise, context-aware, and source-grounded answers to us
 - GitHub repository with all source files (`qa_app.py`, `retriever.py`, `llm.py`, `util.py`, etc.)
 - Working **Streamlit** application
 - 
----
-
-## **Evaluation Focus**
-- **Retrieval Accuracy:** How well the app finds relevant text chunks  
-- **Answer Synthesis:** Relevance, clarity, and conciseness of LLM-generated answers  
-- **Code Design:** Modularity, readability, and maintainability  
-- **Integration Quality:** Smooth functioning between **LangChain**, **FAISS**, and **Gemini**
-
 ---
 
 ## **Example Run**
