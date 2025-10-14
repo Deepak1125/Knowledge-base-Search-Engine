@@ -58,34 +58,26 @@ def apply_custom_style():
 # -------------------- Answer Formatter --------------------
 
 def clean_and_format_answer(text: str) -> str:
-    # Remove bullet noise and normalize spacing
     text = re.sub(r"[■]+", "", text)
     text = re.sub(r"\n\s*\n", "\n\n", text.strip())
-
-    # Normalize bullets
     text = re.sub(r"\n\s*[\*\•\-]", "\n- ", text)
-
-    # Remove triple backtick code blocks completely
     text = re.sub(r"```(?:.|\n)*?```", "", text, flags=re.DOTALL)
 
-    # Remove indented lines (they render as code)
     lines = text.splitlines()
     cleaned_lines = []
     for line in lines:
         if line.lstrip().startswith("```"):
-            continue  # skip entire fenced code blocks
+            continue  
         if line.startswith("    ") or line.startswith("\t"):
-            cleaned_lines.append(line.lstrip())  # strip indents to avoid block code
+            cleaned_lines.append(line.lstrip())  
         else:
             cleaned_lines.append(line)
+            
     text = "\n".join(cleaned_lines)
-
-    # Replace inline block look with plain quotes
     text = re.sub(r"`([^`]+)`", r'"\1"', text)
 
     return text.strip()
-
-
+    
 # -------------------- PDF Generator --------------------
 
 def generate_chat_pdf(chat_history):
@@ -129,7 +121,6 @@ def build_combined_retriever(uploaded_files):
 
         return base_retriever
     finally:
-        # Clean up temp files
         for path in temp_paths:
             try:
                 os.unlink(path)
@@ -145,7 +136,6 @@ def run_qa_app():
     st.markdown('<div class="app-container">', unsafe_allow_html=True)
     st.title("TalkToPDF — Implemented using RAG, LangChain and Gemini LLM")
 
-    # Initialize session state
     if "chat_history" not in st.session_state:
         st.session_state.chat_history = []
     if "qa_chain" not in st.session_state:
@@ -157,7 +147,6 @@ def run_qa_app():
         st.markdown("## 📤 Upload PDFs")
         uploaded_files = st.file_uploader("Upload one or more PDF files", type="pdf", accept_multiple_files=True)
 
-        # Clear history button
         if st.session_state.chat_history:
             if st.button("🗑️ Clear Chat History"):
                 st.session_state.chat_history = []
@@ -176,7 +165,6 @@ def run_qa_app():
             st.download_button("📥 Download as PDF", history_pdf, file_name="chat_history.pdf", mime="application/pdf")
 
     if uploaded_files:
-        # Check if files have changed
         current_file_names = [f.name for f in uploaded_files]
         if current_file_names != st.session_state.uploaded_file_names:
             try:
@@ -185,7 +173,6 @@ def run_qa_app():
                     llm = GeminiLLM(api_key=st.secrets["GEMINI_API_KEY"])
                     st.session_state.qa_chain = RetrievalQA.from_chain_type(llm=llm, retriever=retriever)
                     st.session_state.uploaded_file_names = current_file_names
-                    # Clear history when new PDFs are uploaded
                     st.session_state.chat_history = []
                 st.success("✅ PDFs processed successfully!")
             except Exception as e:
@@ -196,7 +183,6 @@ def run_qa_app():
             st.divider()
             st.markdown("### 💬 Ask questions from your PDFs")
 
-            # Display chat history
             chat_area = st.container()
             with chat_area:
                 for message in st.session_state.chat_history:
@@ -204,11 +190,9 @@ def run_qa_app():
                     formatted_answer = clean_and_format_answer(message["answer"])
                     st.markdown(f'<div class="chat-container assistant-msg">{formatted_answer}</div>', unsafe_allow_html=True)
 
-            # Chat input
             user_input = st.chat_input("Type your question here...")
 
             if user_input:
-                # Build context from last 3 exchanges only (to avoid token limit)
                 recent_history = st.session_state.chat_history[-3:] if len(st.session_state.chat_history) > 3 else st.session_state.chat_history
                 context_prompt = "\n".join([
                     f"You: {m['question']}\nGemini: {m['answer']}"
@@ -226,7 +210,6 @@ def run_qa_app():
                         "answer": raw_answer
                     })
                     
-                    # Rerun to display new message
                     st.rerun()
                     
                 except Exception as e:
