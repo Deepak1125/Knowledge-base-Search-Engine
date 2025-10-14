@@ -135,7 +135,6 @@ def run_qa_app():
 
     st.markdown('<div class="app-container">', unsafe_allow_html=True)
     st.title("Knowledge Base Search Engine")
-    st.subheader("Implemented using RAG, LangChain, and Gemini LLM")
 
     if "chat_history" not in st.session_state:
         st.session_state.chat_history = []
