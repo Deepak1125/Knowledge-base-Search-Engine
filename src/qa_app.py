@@ -130,7 +130,7 @@ def build_combined_retriever(uploaded_files):
 # -------------------- App --------------------
 
 def run_qa_app():
-    st.set_page_config(page_title="Gemini PDF Chat", page_icon="🤖", layout="wide")
+    st.set_page_config(page_title="Knowledge Base Search Engine", page_icon="🤖", layout="wide")
     apply_custom_style()
 
     st.markdown('<div class="app-container">', unsafe_allow_html=True)
