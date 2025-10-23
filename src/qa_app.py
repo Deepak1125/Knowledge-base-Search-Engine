@@ -10,12 +10,14 @@ from reportlab.lib.enums import TA_LEFT
 from reportlab.lib.units import inch
 import re
 
-from langchain.chains import RetrievalQA
+from langchain.chains.retrieval_qa.base import RetrievalQA
+from langchain_community.vectorstores import FAISS
+from langchain_huggingface import HuggingFaceEmbeddings
+
 from retriever import get_faiss_retriever
 from llm import GeminiLLM
 
 # -------------------- Style --------------------
-
 def apply_custom_style():
     st.markdown("""
     <style>
@@ -56,7 +58,6 @@ def apply_custom_style():
     """, unsafe_allow_html=True)
 
 # -------------------- Answer Formatter --------------------
-
 def clean_and_format_answer(text: str) -> str:
     text = re.sub(r"[■]+", "", text)
     text = re.sub(r"\n\s*\n", "\n\n", text.strip())
@@ -77,9 +78,8 @@ def clean_and_format_answer(text: str) -> str:
     text = re.sub(r"`([^`]+)`", r'"\1"', text)
 
     return text.strip()
-    
-# -------------------- PDF Generator --------------------
 
+# -------------------- PDF Generator --------------------
 def generate_chat_pdf(chat_history):
     buffer = BytesIO()
     doc = SimpleDocTemplate(buffer, pagesize=letter,
@@ -93,7 +93,6 @@ def generate_chat_pdf(chat_history):
                               fontName="Helvetica", alignment=TA_LEFT))
 
     flowables = []
-
     for i, msg in enumerate(chat_history, start=1):
         q_text = f"<b>Q{i}:</b> {msg['question']}"
         a_text = f"<b>A{i}:</b> {clean_and_format_answer(msg['answer'])}"
@@ -128,7 +127,6 @@ def build_combined_retriever(uploaded_files):
                 pass
 
 # -------------------- App --------------------
-
 def run_qa_app():
     st.set_page_config(page_title="Knowledge Base Search Engine", page_icon="🤖", layout="wide")
     apply_custom_style()
@@ -171,7 +169,13 @@ def run_qa_app():
                 with st.spinner("🔍 Processing PDFs..."):
                     retriever = build_combined_retriever(uploaded_files)
                     llm = GeminiLLM(api_key=st.secrets["GEMINI_API_KEY"])
-                    st.session_state.qa_chain = RetrievalQA.from_chain_type(llm=llm, retriever=retriever)
+                    
+                    # ✅ Correct chain initialization for latest LangChain
+                    st.session_state.qa_chain = RetrievalQA.from_chain_type(
+                        llm=llm,
+                        retriever=retriever
+                    )
+
                     st.session_state.uploaded_file_names = current_file_names
                     st.session_state.chat_history = []
                 st.success("✅ PDFs processed successfully!")
@@ -204,12 +208,10 @@ def run_qa_app():
                     with st.spinner("🤖 Thinking..."):
                         raw_answer = st.session_state.qa_chain.run(full_prompt)
                     
-                    # Add to history
                     st.session_state.chat_history.append({
                         "question": user_input,
                         "answer": raw_answer
                     })
-                    
                     st.rerun()
                     
                 except Exception as e:
