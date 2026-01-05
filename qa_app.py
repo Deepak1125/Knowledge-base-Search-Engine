@@ -10,7 +10,7 @@ from reportlab.lib.enums import TA_LEFT
 from reportlab.lib.units import inch
 import re
 
-from langchain.chains import RetrievalQA
+from langchain.chains.retrieval_qa.base import RetrievalQA
 from retriever import get_faiss_retriever
 from llm import GeminiLLM
 
