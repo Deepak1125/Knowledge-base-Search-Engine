@@ -19,182 +19,38 @@ from llm import GeminiLLM
 def apply_custom_style():
     st.markdown("""
     <style>
-    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
-
-    html, body, [class*="css"] {
-        font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'SF Pro Display', sans-serif;
-    }
-
-    /* ---------- Global dark, glossy background ---------- */
-    .stApp {
-        background:
-            radial-gradient(1200px 600px at 15% -10%, rgba(90,130,255,0.18), transparent 60%),
-            radial-gradient(1000px 500px at 110% 10%, rgba(160,90,255,0.14), transparent 55%),
-            linear-gradient(180deg, #0b0c10 0%, #101218 45%, #0b0c10 100%);
-        color: #e8eaf0;
-    }
-
-    /* Hide default streamlit chrome clutter */
-    header[data-testid="stHeader"] {
-        background: transparent;
-    }
-    #MainMenu, footer {visibility: hidden;}
-
     .app-container {
-        max-width: 850px;
+        max-width: 800px;
         margin: 0 auto;
         padding: 0 1rem;
     }
-
-    /* ---------- Title ---------- */
-    h1 {
-        font-weight: 800 !important;
-        letter-spacing: -0.02em;
-        background: linear-gradient(135deg, #ffffff 0%, #a9b6ff 55%, #7ea8ff 100%);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        background-clip: text;
-        padding-bottom: 0.2rem;
-        font-size: 2rem !important;
-    }
-
-    h3, h2 {
-        color: #f2f3f7 !important;
-        font-weight: 700 !important;
-        letter-spacing: -0.01em;
-    }
-
-    /* ---------- Glassy panels ---------- */
-    section[data-testid="stSidebar"] {
-        background: linear-gradient(180deg, rgba(255,255,255,0.05), rgba(255,255,255,0.02));
-        backdrop-filter: blur(20px);
-        -webkit-backdrop-filter: blur(20px);
-        border-right: 1px solid rgba(255,255,255,0.08);
-    }
-
-    section[data-testid="stSidebar"] .block-container {
-        padding-top: 2rem;
-    }
-
-    /* ---------- Chat bubbles: glossy Apple iMessage feel ---------- */
     .chat-container {
         display: inline-block;
-        padding: 12px 16px;
-        margin: 6px 0;
-        border-radius: 18px;
-        font-size: 15.5px;
-        line-height: 1.5;
-        max-width: 78%;
+        padding: 10px 14px;
+        margin: 4px 0;
+        border-radius: 10px;
+        font-size: 16px;
+        line-height: 1.4;
+        max-width: 80%;
         word-wrap: break-word;
-        box-shadow: 0 4px 18px rgba(0,0,0,0.35), inset 0 1px 0 rgba(255,255,255,0.15);
-        position: relative;
     }
-
     .user-msg {
-        background: linear-gradient(135deg, #3a82ff 0%, #1c64f2 55%, #0e4fd1 100%);
+        background-color: #1c64f2;
         color: white;
         margin-right: auto;
-        margin-left: 0;
         text-align: left;
-        border-bottom-left-radius: 6px;
     }
-
     .assistant-msg {
-        background: linear-gradient(135deg, rgba(255,255,255,0.10) 0%, rgba(255,255,255,0.05) 100%);
-        backdrop-filter: blur(12px);
-        -webkit-backdrop-filter: blur(12px);
-        border: 1px solid rgba(255,255,255,0.10);
-        color: #eef0f5;
+        background-color: #f1f1f1;
+        color: black;
         margin-left: auto;
-        margin-right: 0;
-        display: block;
-        text-align: left;
-        border-bottom-right-radius: 6px;
     }
-
-    .chat-row {
-        display: flex;
-        width: 100%;
-    }
-    .chat-row.user { justify-content: flex-start; }
-    .chat-row.assistant { justify-content: flex-end; }
-
     .chat-scroll {
-        max-height: 62vh;
+        max-height: 60vh;
         overflow-y: auto;
-        padding: 8px 6px 8px 2px;
+        padding-right: 10px;
         display: flex;
         flex-direction: column;
-    }
-
-    .chat-scroll::-webkit-scrollbar {
-        width: 8px;
-    }
-    .chat-scroll::-webkit-scrollbar-thumb {
-        background: rgba(255,255,255,0.15);
-        border-radius: 10px;
-    }
-    .chat-scroll::-webkit-scrollbar-track {
-        background: transparent;
-    }
-
-    /* ---------- Buttons: glossy pill ---------- */
-    .stButton > button, .stDownloadButton > button {
-        background: linear-gradient(180deg, rgba(255,255,255,0.14), rgba(255,255,255,0.04));
-        color: #f2f3f7;
-        border: 1px solid rgba(255,255,255,0.14);
-        border-radius: 12px;
-        padding: 0.55rem 1rem;
-        font-weight: 600;
-        backdrop-filter: blur(10px);
-        box-shadow: 0 2px 10px rgba(0,0,0,0.25), inset 0 1px 0 rgba(255,255,255,0.18);
-        transition: all 0.15s ease;
-    }
-    .stButton > button:hover, .stDownloadButton > button:hover {
-        background: linear-gradient(180deg, rgba(90,130,255,0.35), rgba(90,130,255,0.15));
-        border-color: rgba(120,150,255,0.5);
-        transform: translateY(-1px);
-        box-shadow: 0 6px 18px rgba(60,100,255,0.25), inset 0 1px 0 rgba(255,255,255,0.2);
-    }
-    .stButton > button:active, .stDownloadButton > button:active {
-        transform: translateY(0px);
-    }
-
-    /* ---------- File uploader ---------- */
-    [data-testid="stFileUploaderDropzone"] {
-        background: linear-gradient(180deg, rgba(255,255,255,0.06), rgba(255,255,255,0.02));
-        border: 1.5px dashed rgba(255,255,255,0.18);
-        border-radius: 16px;
-        backdrop-filter: blur(10px);
-    }
-
-    /* ---------- Chat input ---------- */
-    [data-testid="stChatInput"] {
-        background: rgba(255,255,255,0.04);
-        border: 1px solid rgba(255,255,255,0.12);
-        border-radius: 16px;
-        backdrop-filter: blur(16px);
-        -webkit-backdrop-filter: blur(16px);
-        box-shadow: 0 4px 20px rgba(0,0,0,0.35);
-    }
-
-    /* ---------- Divider ---------- */
-    hr {
-        border-color: rgba(255,255,255,0.08) !important;
-    }
-
-    /* ---------- Alerts (info/success/error) glossy cards ---------- */
-    div[data-testid="stAlert"] {
-        background: linear-gradient(135deg, rgba(255,255,255,0.08), rgba(255,255,255,0.03));
-        border: 1px solid rgba(255,255,255,0.12);
-        border-radius: 14px;
-        backdrop-filter: blur(10px);
-        box-shadow: 0 4px 16px rgba(0,0,0,0.3);
-    }
-
-    /* ---------- Spinner text ---------- */
-    .stSpinner > div {
-        color: #cfd6ff;
     }
     </style>
     """, unsafe_allow_html=True)
@@ -287,8 +143,7 @@ def run_qa_app():
     apply_custom_style()
 
     st.markdown('<div class="app-container">', unsafe_allow_html=True)
-    st.title("TalkToPDF")
-    st.caption("Implemented using RAG, LangChain and Gemini LLM")
+    st.title("TalkToPDF — Implemented using RAG, LangChain and Gemini LLM")
 
     # Initialize session state
     if "chat_history" not in st.session_state:
@@ -344,18 +199,10 @@ def run_qa_app():
             # Display chat history
             chat_area = st.container()
             with chat_area:
-                st.markdown('<div class="chat-scroll">', unsafe_allow_html=True)
                 for message in st.session_state.chat_history:
-                    st.markdown(
-                        f'<div class="chat-row user"><div class="chat-container user-msg">{message["question"]}</div></div>',
-                        unsafe_allow_html=True
-                    )
+                    st.markdown(f'<div class="chat-container user-msg">{message["question"]}</div>', unsafe_allow_html=True)
                     formatted_answer = clean_and_format_answer(message["answer"])
-                    st.markdown(
-                        f'<div class="chat-row assistant"><div class="chat-container assistant-msg">{formatted_answer}</div></div>',
-                        unsafe_allow_html=True
-                    )
-                st.markdown('</div>', unsafe_allow_html=True)
+                    st.markdown(f'<div class="chat-container assistant-msg">{formatted_answer}</div>', unsafe_allow_html=True)
 
             # Chat input
             user_input = st.chat_input("Type your question here...")
